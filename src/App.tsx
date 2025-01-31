@@ -4,6 +4,7 @@ import "./App.css";
 import { Button, Form, Accordion } from "react-bootstrap";
 import FileSaver from "file-saver";
 import { FullListAccordion } from "./AccordionComponents/FullListAccordion";
+import { FullObjectAccordion } from "./AccordionComponents/FullObjectAccordion";
 
 function App(): JSX.Element {
     const [yamlFile, setYamlFile] = useState<File | undefined>(YAML.parse("")); //Not Needed
@@ -24,6 +25,7 @@ function App(): JSX.Element {
         const newOptions = { ...outputYaml[outputYaml["game"]] }; //=Keymaster's Keep field
         const currentArray = optionText.split(","); //=What we'll override the old value with
         newOptions[optionChanged] = [...currentArray];
+        console.log(optionChanged);
         setOutputYaml({ ...outputYaml, "Keymaster's Keep": { ...newOptions } });
     }
 
@@ -39,6 +41,7 @@ function App(): JSX.Element {
             currentObject[optionChanged] = parseInt(optionText);
         }
         newOptions[optionCategory] = { ...currentObject };
+        //console.log(newOptions);
         setOutputYaml({ ...outputYaml, "Keymaster's Keep": { ...newOptions } });
     }
 
@@ -54,7 +57,7 @@ function App(): JSX.Element {
             currentArray.push(optionText);
         }
         newOptions[optionChanged] = [...currentArray];
-        console.log(newOptions);
+        //console.log(newOptions);
         setOutputYaml({ ...outputYaml, "Keymaster's Keep": { ...newOptions } });
     }
 
@@ -180,68 +183,17 @@ function App(): JSX.Element {
                                     </Accordion.Body>
                                 </Accordion.Item>
                             ) : value.length ? (
-                                <div>
-                                    <FullListAccordion
-                                        myKey={key}
-                                        values={value}
-                                        changeArrayOptions={changeArrayOptions}
-                                    ></FullListAccordion>
-                                </div>
+                                <FullListAccordion
+                                    myKey={key}
+                                    values={value}
+                                    changeArrayOptions={changeArrayOptions}
+                                ></FullListAccordion>
                             ) : (
-                                <div>
-                                    <Accordion.Item eventKey={key}>
-                                        <Accordion.Header>
-                                            {key}
-                                        </Accordion.Header>
-                                        <Accordion.Body>
-                                            <h2>{key}</h2>
-                                            <div
-                                                style={{
-                                                    display: "grid",
-                                                    justifyItems: "center",
-                                                    justifyContent: "center",
-                                                    grid: "auto-flow / repeat(2, 30%)"
-                                                }}
-                                            >
-                                                {value ? (
-                                                    Object.entries(value).map(
-                                                        ([key2, value2]) => (
-                                                            <Form key={key2}>
-                                                                <Form.Group>
-                                                                    <Form.Label>
-                                                                        <h3>
-                                                                            {
-                                                                                key2
-                                                                            }
-                                                                        </h3>
-                                                                    </Form.Label>
-                                                                    <Form.Control
-                                                                        as="textarea"
-                                                                        onChange={(
-                                                                            e
-                                                                        ) =>
-                                                                            changeObjectOptions(
-                                                                                key,
-                                                                                key2,
-                                                                                e
-                                                                                    .target
-                                                                                    .value
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        {value2}
-                                                                    </Form.Control>
-                                                                </Form.Group>
-                                                            </Form>
-                                                        )
-                                                    )
-                                                ) : (
-                                                    <div></div>
-                                                )}
-                                            </div>
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                </div>
+                                <FullObjectAccordion
+                                    myKey={key}
+                                    values={value}
+                                    changeObjectOptions={changeObjectOptions}
+                                ></FullObjectAccordion>
                             )
                         )}
                 </Accordion>
