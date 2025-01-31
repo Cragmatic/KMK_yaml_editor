@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import YAML from "yaml";
 import "./App.css";
-import { Button, Form, ListGroup } from "react-bootstrap";
+import { Button, Form, Accordion } from "react-bootstrap";
 import FileSaver from "file-saver";
 
 function App(): JSX.Element {
@@ -117,141 +117,168 @@ function App(): JSX.Element {
             ></input>
             <header className="App-header">Your Uploaded YAML file:</header>
             <div>
-                <ListGroup>
-                    <ListGroup.Item key={"name"}>
-                        <Form key={"name"}>
-                            <Form.Group>
-                                <Form.Label>
-                                    <h3>{"name"}</h3>
-                                </Form.Label>
-                                <Form.Control
-                                    as="textarea"
-                                    onChange={(e) =>
-                                        setOutputYaml({
-                                            ...outputYaml,
-                                            name: e.target.value
-                                        })
-                                    }
-                                    defaultValue={outputYaml["name"]}
-                                ></Form.Control>
-                            </Form.Group>
-                        </Form>
-                    </ListGroup.Item>
-                    <ListGroup.Item key={"desc"}>
-                        {"description: " + yaml["description"]}
-                    </ListGroup.Item>
+                <Accordion alwaysOpen>
+                    <Accordion.Item eventKey={"name"}>
+                        <Accordion.Header>name</Accordion.Header>
+                        <Accordion.Body>
+                            <Form key={"name"}>
+                                <Form.Group>
+                                    <Form.Label>
+                                        <h3>{"name"}</h3>
+                                    </Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        onChange={(e) =>
+                                            setOutputYaml({
+                                                ...outputYaml,
+                                                name: e.target.value
+                                            })
+                                        }
+                                        defaultValue={outputYaml["name"]}
+                                    ></Form.Control>
+                                </Form.Group>
+                            </Form>
+                        </Accordion.Body>
+                    </Accordion.Item>
+
+                    <Accordion.Item eventKey={"desc"}>
+                        <Accordion.Header>description</Accordion.Header>
+                        <Accordion.Body>
+                            {"description: " + yaml["description"]}
+                        </Accordion.Body>
+                    </Accordion.Item>
                     {yaml["game"] &&
                         Object.entries(yaml[yaml["game"]]).map(([key, value]) =>
                             checkForSpecialCases(key) ? (
-                                <ListGroup.Item
-                                    key={key}
-                                    style={{
-                                        display: "grid",
-                                        justifyItems: "center",
-                                        justifyContent: "center"
-                                    }}
-                                >
-                                    <Form>
-                                        <Form.Group>
-                                            <Form.Label>
-                                                <h2>{key}</h2>
-                                            </Form.Label>
-                                            <Form.Control
-                                                defaultValue={value.toString()}
-                                                as="textarea"
-                                                onChange={(e) =>
-                                                    changeSpecialOptions(
-                                                        key,
-                                                        e.target.value
-                                                    )
-                                                }
-                                            ></Form.Control>
-                                        </Form.Group>
-                                    </Form>
-                                </ListGroup.Item>
-                            ) : value.length ? (
-                                <ListGroup.Item key={key}>
-                                    <h2>{key}</h2>
-                                    <Form
+                                <Accordion.Item eventKey={key}>
+                                    <Accordion.Header>{key}</Accordion.Header>
+                                    <Accordion.Body
                                         style={{
                                             display: "grid",
-                                            grid:
-                                                value.length < 5
-                                                    ? "auto-flow 100px / repeat(" +
-                                                      (value.length % 5) +
-                                                      ", 1fr)"
-                                                    : "auto-flow 100px / repeat(5, 1fr)",
                                             justifyItems: "center",
-                                            alignItems: "baseline"
+                                            justifyContent: "center"
                                         }}
                                     >
-                                        {value.map((value: string) => (
-                                            <Form.Check
-                                                style={{
-                                                    width: "fit-content",
-                                                    display: "grid",
-                                                    justifyItems: "center",
-                                                    fontWeight: "bold"
-                                                }}
-                                                type={"checkbox"}
-                                                id={value + "-" + "checkbox"}
-                                                label={value}
-                                                key={value}
-                                                onClick={() =>
-                                                    changeArrayOptions(
-                                                        key,
-                                                        value
-                                                    )
-                                                }
-                                            ></Form.Check>
-                                        ))}
-                                    </Form>
-                                </ListGroup.Item>
+                                        <Form>
+                                            <Form.Group>
+                                                <Form.Label>
+                                                    <h2>{key}</h2>
+                                                </Form.Label>
+                                                <Form.Control
+                                                    defaultValue={value.toString()}
+                                                    as="textarea"
+                                                    onChange={(e) =>
+                                                        changeSpecialOptions(
+                                                            key,
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                ></Form.Control>
+                                            </Form.Group>
+                                        </Form>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            ) : value.length ? (
+                                <Accordion.Item eventKey={key}>
+                                    <Accordion.Header>{key}</Accordion.Header>
+                                    <Accordion.Body>
+                                        <h2>{key}</h2>
+                                        <Form
+                                            style={{
+                                                display: "grid",
+                                                grid:
+                                                    value.length < 5
+                                                        ? "auto-flow 100px / repeat(" +
+                                                          (value.length % 5) +
+                                                          ", 1fr)"
+                                                        : "auto-flow 100px / repeat(5, 1fr)",
+                                                justifyItems: "center",
+                                                alignItems: "baseline"
+                                            }}
+                                        >
+                                            {value.map((value: string) => (
+                                                <Form.Check
+                                                    style={{
+                                                        width: "fit-content",
+                                                        display: "grid",
+                                                        justifyItems: "center",
+                                                        fontWeight: "bold"
+                                                    }}
+                                                    type={"checkbox"}
+                                                    id={
+                                                        value + "-" + "checkbox"
+                                                    }
+                                                    label={value}
+                                                    key={value}
+                                                    onClick={() =>
+                                                        changeArrayOptions(
+                                                            key,
+                                                            value
+                                                        )
+                                                    }
+                                                ></Form.Check>
+                                            ))}
+                                        </Form>
+                                    </Accordion.Body>
+                                </Accordion.Item>
                             ) : (
                                 <div>
-                                    <h2>{key}</h2>
-                                    <ListGroup.Item
-                                        key={key}
-                                        style={{
-                                            display: "grid",
-                                            justifyItems: "center",
-                                            justifyContent: "center",
-                                            grid: "auto-flow / repeat(2, 30%)"
-                                        }}
-                                    >
-                                        {typeof value == "object" && value ? (
-                                            Object.entries(value).map(
-                                                ([key2, value2]) => (
-                                                    <Form key={key2}>
-                                                        <Form.Group>
-                                                            <Form.Label>
-                                                                <h3>{key2}</h3>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                as="textarea"
-                                                                onChange={(e) =>
-                                                                    changeObjectOptions(
-                                                                        key,
-                                                                        key2,
-                                                                        e.target
-                                                                            .value
-                                                                    )
-                                                                }
-                                                            >
-                                                                {value2}
-                                                            </Form.Control>
-                                                        </Form.Group>
-                                                    </Form>
-                                                )
-                                            )
-                                        ) : (
-                                            <div></div>
-                                        )}
-                                    </ListGroup.Item>
+                                    <Accordion.Item eventKey={key}>
+                                        <Accordion.Header>
+                                            {key}
+                                        </Accordion.Header>
+                                        <Accordion.Body>
+                                            <h2>{key}</h2>
+                                            <div
+                                                style={{
+                                                    display: "grid",
+                                                    justifyItems: "center",
+                                                    justifyContent: "center",
+                                                    grid: "auto-flow / repeat(2, 30%)"
+                                                }}
+                                            >
+                                                {value ? (
+                                                    Object.entries(value).map(
+                                                        ([key2, value2]) => (
+                                                            <Form key={key2}>
+                                                                <Form.Group>
+                                                                    <Form.Label>
+                                                                        <h3>
+                                                                            {
+                                                                                key2
+                                                                            }
+                                                                        </h3>
+                                                                    </Form.Label>
+                                                                    <Form.Control
+                                                                        as="textarea"
+                                                                        onChange={(
+                                                                            e
+                                                                        ) =>
+                                                                            changeObjectOptions(
+                                                                                key,
+                                                                                key2,
+                                                                                e
+                                                                                    .target
+                                                                                    .value
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        {value2}
+                                                                    </Form.Control>
+                                                                </Form.Group>
+                                                            </Form>
+                                                        )
+                                                    )
+                                                ) : (
+                                                    <div></div>
+                                                )}
+                                            </div>
+                                        </Accordion.Body>
+                                    </Accordion.Item>
                                 </div>
                             )
                         )}
-                </ListGroup>
+                </Accordion>
             </div>
             <Button
                 onClick={() =>
