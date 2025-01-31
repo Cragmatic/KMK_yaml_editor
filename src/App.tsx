@@ -5,6 +5,8 @@ import { Button, Form, Accordion } from "react-bootstrap";
 import FileSaver from "file-saver";
 import { FullListAccordion } from "./AccordionComponents/FullListAccordion";
 import { FullObjectAccordion } from "./AccordionComponents/FullObjectAccordion";
+import { EmptyListAccordion } from "./AccordionComponents/EmptyListAccordion";
+import { check } from "prettier";
 
 function App(): JSX.Element {
     const [yamlFile, setYamlFile] = useState<File | undefined>(YAML.parse("")); //Not Needed
@@ -25,7 +27,7 @@ function App(): JSX.Element {
         const newOptions = { ...outputYaml[outputYaml["game"]] }; //=Keymaster's Keep field
         const currentArray = optionText.split(","); //=What we'll override the old value with
         newOptions[optionChanged] = [...currentArray];
-        console.log(optionChanged);
+        console.log(optionChanged, currentArray);
         setOutputYaml({ ...outputYaml, "Keymaster's Keep": { ...newOptions } });
     }
 
@@ -153,35 +155,17 @@ function App(): JSX.Element {
                     </Accordion.Item>
                     {yaml["game"] &&
                         Object.entries(yaml[yaml["game"]]).map(([key, value]) =>
-                            checkForSpecialCases(key) ? (
-                                <Accordion.Item eventKey={key}>
-                                    <Accordion.Header>{key}</Accordion.Header>
-                                    <Accordion.Body
-                                        style={{
-                                            display: "grid",
-                                            justifyItems: "center",
-                                            justifyContent: "center"
-                                        }}
-                                    >
-                                        <Form>
-                                            <Form.Group>
-                                                <Form.Label>
-                                                    <h2>{key}</h2>
-                                                </Form.Label>
-                                                <Form.Control
-                                                    defaultValue={value.toString()}
-                                                    as="textarea"
-                                                    onChange={(e) =>
-                                                        changeSpecialOptions(
-                                                            key,
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                ></Form.Control>
-                                            </Form.Group>
-                                        </Form>
-                                    </Accordion.Body>
-                                </Accordion.Item>
+                            value.length === 0 || checkForSpecialCases(key) ? (
+                                <div>
+                                    <span>{value.length}</span>
+                                    <EmptyListAccordion
+                                        myKey={key}
+                                        values={value}
+                                        changeSpecialOptions={
+                                            changeSpecialOptions
+                                        }
+                                    ></EmptyListAccordion>
+                                </div>
                             ) : value.length ? (
                                 <FullListAccordion
                                     myKey={key}
