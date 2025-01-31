@@ -3,6 +3,7 @@ import YAML from "yaml";
 import "./App.css";
 import { Button, Form, Accordion } from "react-bootstrap";
 import FileSaver from "file-saver";
+import { FullListAccordion } from "./AccordionComponents/FullListAccordion";
 
 function App(): JSX.Element {
     const [yamlFile, setYamlFile] = useState<File | undefined>(YAML.parse("")); //Not Needed
@@ -179,48 +180,13 @@ function App(): JSX.Element {
                                     </Accordion.Body>
                                 </Accordion.Item>
                             ) : value.length ? (
-                                <Accordion.Item eventKey={key}>
-                                    <Accordion.Header>{key}</Accordion.Header>
-                                    <Accordion.Body>
-                                        <h2>{key}</h2>
-                                        <Form
-                                            style={{
-                                                display: "grid",
-                                                grid:
-                                                    value.length < 5
-                                                        ? "auto-flow 100px / repeat(" +
-                                                          (value.length % 5) +
-                                                          ", 1fr)"
-                                                        : "auto-flow 100px / repeat(5, 1fr)",
-                                                justifyItems: "center",
-                                                alignItems: "baseline"
-                                            }}
-                                        >
-                                            {value.map((value: string) => (
-                                                <Form.Check
-                                                    style={{
-                                                        width: "fit-content",
-                                                        display: "grid",
-                                                        justifyItems: "center",
-                                                        fontWeight: "bold"
-                                                    }}
-                                                    type={"checkbox"}
-                                                    id={
-                                                        value + "-" + "checkbox"
-                                                    }
-                                                    label={value}
-                                                    key={value}
-                                                    onClick={() =>
-                                                        changeArrayOptions(
-                                                            key,
-                                                            value
-                                                        )
-                                                    }
-                                                ></Form.Check>
-                                            ))}
-                                        </Form>
-                                    </Accordion.Body>
-                                </Accordion.Item>
+                                <div>
+                                    <FullListAccordion
+                                        myKey={key}
+                                        values={value}
+                                        changeArrayOptions={changeArrayOptions}
+                                    ></FullListAccordion>
+                                </div>
                             ) : (
                                 <div>
                                     <Accordion.Item eventKey={key}>
