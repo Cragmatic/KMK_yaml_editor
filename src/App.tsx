@@ -156,16 +156,11 @@ function App(): JSX.Element {
                     {yaml["game"] &&
                         Object.entries(yaml[yaml["game"]]).map(([key, value]) =>
                             value.length === 0 || checkForSpecialCases(key) ? (
-                                <div>
-                                    <span>{value.length}</span>
-                                    <EmptyListAccordion
-                                        myKey={key}
-                                        values={value}
-                                        changeSpecialOptions={
-                                            changeSpecialOptions
-                                        }
-                                    ></EmptyListAccordion>
-                                </div>
+                                <EmptyListAccordion
+                                    myKey={key}
+                                    values={value}
+                                    changeSpecialOptions={changeSpecialOptions}
+                                ></EmptyListAccordion>
                             ) : value.length ? (
                                 <FullListAccordion
                                     myKey={key}
