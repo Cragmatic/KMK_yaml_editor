@@ -11,27 +11,24 @@ function App(): JSX.Element {
     const [yamlText, setYamlText] = useState<string>("");
     const [yaml, setYaml] = useState<Record<string, unknown>>({});
     const [outputYaml, setOutputYaml] = useState<Record<string, unknown>>({});
-    const specialCases: string[] = [
-        "bizhawk_shuffler_games",
-        "game_backlog_game_selection",
-        "game_backlog_actions",
-        "custom_objective_list",
-        "retroachievements_games",
-        "game_medley_game_selection",
-        "archipelago_multiworld_randomizer_custom_game_selection"
-    ];
 
     function resetOptions(optionChanged: string) {
-        const newOptions = { ...outputYaml[outputYaml["game"]] }; //=Keymaster's Keep field
+        const game = outputYaml["game"] as string; //It's known that the game field will be a string.
+        const oldOptions = outputYaml[game] as Record<string, unknown>; //Similarly, we know that this will be an Object
+        const newOptions = { ...oldOptions }; //Game field = Keymaster's Keep field
         const newArray: string[] = [];
+
         newOptions[optionChanged] = [...newArray];
         console.log(optionChanged, newOptions[optionChanged]);
         setOutputYaml({ ...outputYaml, "Keymaster's Keep": { ...newOptions } });
     }
 
     function changeSpecialOptions(optionChanged: string, optionText: string) {
-        const newOptions = { ...outputYaml[outputYaml["game"]] }; //=Keymaster's Keep field
+        const game = outputYaml["game"] as string; //It's known that the game field will be a string.
+        const oldOptions = outputYaml[game] as Record<string, unknown>; //Similarly, we know that this will be an Object
+        const newOptions = { ...oldOptions }; //Game field = Keymaster's Keep field
         const newArray = optionText.split(","); //=What we'll override the old value with
+
         newOptions[optionChanged] = [...newArray];
         console.log(optionChanged, newOptions[optionChanged]);
         setOutputYaml({ ...outputYaml, "Keymaster's Keep": { ...newOptions } });
@@ -43,8 +40,11 @@ function App(): JSX.Element {
         optionText: string
     ) {
         //console.log(optionCategory, optionChanged, optionText);
-        const newOptions = { ...outputYaml[outputYaml["game"]] }; //=Keymaster's Keep field
-        const currentObject = { ...newOptions[optionCategory] }; //Specific Object (i.e: "artifacts_of_resolve_total")
+        const game = outputYaml["game"] as string; //It's known that the game field will be a string.
+        const oldOptions = outputYaml[game] as Record<string, unknown>; //Similarly, we know that this will be an Object
+        const newOptions = { ...oldOptions }; //=Keymaster's Keep field
+        const oldObject = newOptions[optionCategory] as Record<string, unknown>;
+        const currentObject = { ...oldObject }; //Specific Object (i.e: "artifacts_of_resolve_total")
         if (currentObject[optionChanged] != null) {
             currentObject[optionChanged] = parseInt(optionText);
         }
@@ -54,7 +54,9 @@ function App(): JSX.Element {
     }
 
     function changeArrayOptions(optionChanged: string, optionText: string) {
-        const newOptions = { ...outputYaml[outputYaml["game"]] }; //=Keymaster's Keep field
+        const game = outputYaml["game"] as string; //It's known that the game field will be a string.
+        const oldOptions = outputYaml[game] as Record<string, string[]>; //Similarly, we know that this will be an Object
+        const newOptions = { ...oldOptions }; //Game field = Keymaster's Keep field
         const currentArray: string[] = [...newOptions[optionChanged]]; //Specific Array (i.e: "game_selection")
         if (currentArray.includes(optionText)) {
             currentArray.splice(
@@ -67,10 +69,6 @@ function App(): JSX.Element {
         newOptions[optionChanged] = [...currentArray];
         console.log(optionChanged, newOptions[optionChanged]);
         setOutputYaml({ ...outputYaml, "Keymaster's Keep": { ...newOptions } });
-    }
-
-    function checkForSpecialCases(name: string): boolean {
-        return specialCases.includes(name);
     }
 
     function readFile(file: File) {
