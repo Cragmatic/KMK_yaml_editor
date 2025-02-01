@@ -1,18 +1,7 @@
-# React TypeScript Starter Repo
+# Archipelago yaml editor webapp (heavily WIP)
 
-Hello! This repository has been pre-configured with eslint and gh-pages to automatically deploy your app when you push to the main branch.
+Hello! This is a first-stab at a web-based editor for yaml files for configuring archipelago games.
 
-You will, however, need to finish setting up the deployment.
+It's currently designed around Keymaster's Keep specifically; It's functional, but has some implementation quirks & relies on uploading the original template.
 
-### 1. Generate a personal access token
-
-1. Click on your picture -> `settings` in the top right of Github.
-2. Then, scroll to `Developer Settings` and click `Personal access tokens`
-3. Generate a new token with `repo` access and no expiration date.
-4. Make sure you copy the created token as you will not be able to see it after this.
-
-### 2. Add a secret to the forked repo
-
-Back in this repository, go to `settings` -> `secrets` -> `Actions` and click the `New repository secret` button in the topright.
-
-Name the secret "GH_TOKEN" and paste in the token you copied in the previous step.
+### Disclaimer: I am not affiliated with Archipelago or Keymaster's Keep in any way - This is just something I made on my own. I don't have plans to maintain it or even necessarily finish it, it's provided as-is & it's continued support & availability is uncertain.
