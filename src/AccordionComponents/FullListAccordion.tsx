@@ -4,16 +4,19 @@ import { Accordion, Form } from "react-bootstrap";
 export function FullListAccordion({
     myKey,
     values,
-    changeArrayOptions
+    changeArrayOptions,
+    children
 }: {
     myKey: string;
     values: string[];
     changeArrayOptions: (key: string, value: string) => void;
+    children: JSX.Element;
 }): JSX.Element {
     return (
         <Accordion.Item eventKey={myKey}>
             <Accordion.Header>{myKey}</Accordion.Header>
             <Accordion.Body>
+                {children}
                 <h2>{myKey}</h2>
                 <Form
                     style={{
@@ -37,9 +40,9 @@ export function FullListAccordion({
                                 fontWeight: "bold"
                             }}
                             type={"checkbox"}
-                            id={value + "-" + "checkbox"}
+                            id={myKey + value + "-" + "checkbox"}
                             label={value}
-                            key={value}
+                            key={myKey + value}
                             onClick={() => changeArrayOptions(myKey, value)}
                         ></Form.Check>
                     ))}

@@ -23,7 +23,7 @@ export function FullObjectAccordion({
                     }}
                 >
                     {Object.entries(values).map(([key2, value2]) => (
-                        <Form key={key2}>
+                        <Form key={myKey + key2}>
                             <Form.Group>
                                 <Form.Label>
                                     <h3>{key2}</h3>
@@ -37,9 +37,8 @@ export function FullObjectAccordion({
                                             e.target.value
                                         )
                                     }
-                                >
-                                    {value2}
-                                </Form.Control>
+                                    defaultValue={value2.toString()}
+                                ></Form.Control>
                             </Form.Group>
                         </Form>
                     ))}

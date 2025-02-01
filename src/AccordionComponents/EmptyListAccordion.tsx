@@ -4,11 +4,13 @@ import { Accordion, Form } from "react-bootstrap";
 export function EmptyListAccordion({
     myKey,
     values,
-    changeSpecialOptions
+    changeSpecialOptions,
+    children
 }: {
     myKey: string;
     values: string[];
     changeSpecialOptions: (optionChanged: string, optionText: string) => void;
+    children: JSX.Element;
 }): JSX.Element {
     return (
         <Accordion.Item eventKey={myKey}>
@@ -20,6 +22,7 @@ export function EmptyListAccordion({
                     justifyContent: "center"
                 }}
             >
+                {children}
                 <Form>
                     <Form.Group>
                         <Form.Label>

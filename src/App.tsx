@@ -3,10 +3,8 @@ import YAML from "yaml";
 import "./App.css";
 import { Button, Form, Accordion } from "react-bootstrap";
 import FileSaver from "file-saver";
-import { FullListAccordion } from "./AccordionComponents/FullListAccordion";
 import { FullObjectAccordion } from "./AccordionComponents/FullObjectAccordion";
-import { EmptyListAccordion } from "./AccordionComponents/EmptyListAccordion";
-import { check } from "prettier";
+import { HybridListAccordion } from "./AccordionComponents/HybridListAccordion";
 
 function App(): JSX.Element {
     const [yamlFile, setYamlFile] = useState<File | undefined>(YAML.parse("")); //Not Needed
@@ -23,11 +21,19 @@ function App(): JSX.Element {
         "archipelago_multiworld_randomizer_custom_game_selection"
     ];
 
+    function resetOptions(optionChanged: string) {
+        const newOptions = { ...outputYaml[outputYaml["game"]] }; //=Keymaster's Keep field
+        const newArray: string[] = [];
+        newOptions[optionChanged] = [...newArray];
+        console.log(optionChanged, newOptions[optionChanged]);
+        setOutputYaml({ ...outputYaml, "Keymaster's Keep": { ...newOptions } });
+    }
+
     function changeSpecialOptions(optionChanged: string, optionText: string) {
         const newOptions = { ...outputYaml[outputYaml["game"]] }; //=Keymaster's Keep field
-        const currentArray = optionText.split(","); //=What we'll override the old value with
-        newOptions[optionChanged] = [...currentArray];
-        console.log(optionChanged, currentArray);
+        const newArray = optionText.split(","); //=What we'll override the old value with
+        newOptions[optionChanged] = [...newArray];
+        console.log(optionChanged, newOptions[optionChanged]);
         setOutputYaml({ ...outputYaml, "Keymaster's Keep": { ...newOptions } });
     }
 
@@ -43,7 +49,7 @@ function App(): JSX.Element {
             currentObject[optionChanged] = parseInt(optionText);
         }
         newOptions[optionCategory] = { ...currentObject };
-        //console.log(newOptions);
+        console.log(optionChanged, newOptions[optionChanged]);
         setOutputYaml({ ...outputYaml, "Keymaster's Keep": { ...newOptions } });
     }
 
@@ -59,7 +65,7 @@ function App(): JSX.Element {
             currentArray.push(optionText);
         }
         newOptions[optionChanged] = [...currentArray];
-        //console.log(newOptions);
+        console.log(optionChanged, newOptions[optionChanged]);
         setOutputYaml({ ...outputYaml, "Keymaster's Keep": { ...newOptions } });
     }
 
@@ -155,23 +161,21 @@ function App(): JSX.Element {
                     </Accordion.Item>
                     {yaml["game"] &&
                         Object.entries(yaml[yaml["game"]]).map(([key, value]) =>
-                            value.length === 0 || checkForSpecialCases(key) ? (
-                                <EmptyListAccordion
+                            value.length != undefined ? (
+                                <HybridListAccordion
                                     myKey={key}
                                     values={value}
                                     changeSpecialOptions={changeSpecialOptions}
-                                ></EmptyListAccordion>
-                            ) : value.length ? (
-                                <FullListAccordion
-                                    myKey={key}
-                                    values={value}
                                     changeArrayOptions={changeArrayOptions}
-                                ></FullListAccordion>
+                                    resetOptions={resetOptions}
+                                    key={key}
+                                ></HybridListAccordion>
                             ) : (
                                 <FullObjectAccordion
                                     myKey={key}
                                     values={value}
                                     changeObjectOptions={changeObjectOptions}
+                                    key={key}
                                 ></FullObjectAccordion>
                             )
                         )}
