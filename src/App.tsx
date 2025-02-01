@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-parens */
 import React, { useState } from "react";
 import YAML from "yaml";
 import "./App.css";
@@ -7,8 +8,8 @@ import { FullObjectAccordion } from "./AccordionComponents/FullObjectAccordion";
 import { HybridListAccordion } from "./AccordionComponents/HybridListAccordion";
 
 function App(): JSX.Element {
-    const [yamlFile, setYamlFile] = useState<File | undefined>(YAML.parse("")); //Not Needed
-    const [yamlText, setYamlText] = useState<string>("");
+    //    const [yamlFile, setYamlFile] = useState<File | undefined>(YAML.parse("")); //Not Needed
+    //    const [yamlText, setYamlText] = useState<string>("");
     const [yaml, setYaml] = useState<Record<string, unknown>>({});
     const [outputYaml, setOutputYaml] = useState<Record<string, unknown>>({});
 
@@ -76,22 +77,27 @@ function App(): JSX.Element {
         if (file) {
             const reader = new FileReader();
             return new Promise((resolve, reject) => {
-                reader.onload = (event) => resolve(event.target.result);
+                reader.onload = (event) =>
+                    event.target && event.target.result
+                        ? resolve(event.target.result)
+                        : console.log("FAILURE");
                 reader.onerror = (error) => reject(error);
                 reader.readAsText(file);
             });
         }
     }
 
-    function initializeOutputYaml(yaml: Record<string, unknown>) {
+    function initializeOutputYaml(
+        yaml: Record<string, Record<string, unknown>>
+    ) {
         const outputYaml = { ...yaml };
         if (yaml["Keymaster's Keep"]) {
             const oldOptions: Record<string, unknown> = {
                 ...yaml["Keymaster's Keep"]
             };
-            const newOptions = {};
+            const newOptions: Record<string, unknown> = {};
             Object.entries(oldOptions).map(([key, value]) =>
-                value.length
+                (value as string[]).length
                     ? (newOptions[key] = [])
                     : (newOptions[key] = value)
             );
@@ -103,18 +109,24 @@ function App(): JSX.Element {
     function updateYaml(yaml: File | undefined): void {
         //Again, thanks stackoverflow
         if (yaml) {
-            readFile(yaml)
-                ?.then((content: string) => {
-                    setYaml(YAML.parse(content));
-                    initializeOutputYaml(YAML.parse(content));
-                    console.log(YAML.parse(content));
-                    setYamlText(YAML.stringify(YAML.parse(content)));
-                })
-                .catch((error) => console.log(error));
+            const stringFile = readFile(yaml) as Promise<string>;
+            if (stringFile) {
+                stringFile
+                    .then((content: string) => {
+                        setYaml(YAML.parse(content));
+                        initializeOutputYaml(YAML.parse(content));
+                        //console.log(YAML.parse(content));
+                        //setYamlText(YAML.stringify(YAML.parse(content)));
+                    })
+                    .catch((error) => console.log(error));
+            }
         }
     }
     return (
         <div className="App">
+            <header className="App-header">
+                {"Keymaster's keep template YAML editor:"}
+            </header>
             <input
                 type="file"
                 key={"yaml"}
@@ -125,7 +137,6 @@ function App(): JSX.Element {
                     updateYaml(e.target.files ? e.target.files[0] : undefined)
                 }
             ></input>
-            <header className="App-header">Your Uploaded YAML file:</header>
             <div>
                 <Accordion alwaysOpen>
                     <Accordion.Item eventKey={"name"}>
@@ -144,7 +155,9 @@ function App(): JSX.Element {
                                                 name: e.target.value
                                             })
                                         }
-                                        defaultValue={outputYaml["name"]}
+                                        defaultValue={
+                                            outputYaml["name"] as string
+                                        }
                                     ></Form.Control>
                                 </Form.Group>
                             </Form>
@@ -158,11 +171,16 @@ function App(): JSX.Element {
                         </Accordion.Body>
                     </Accordion.Item>
                     {yaml["game"] &&
-                        Object.entries(yaml[yaml["game"]]).map(([key, value]) =>
-                            value.length != undefined ? (
+                        Object.entries(
+                            yaml[yaml["game"] as string] as Record<
+                                string,
+                                unknown
+                            >
+                        ).map(([key, value]) =>
+                            (value as string[]).length != undefined ? (
                                 <HybridListAccordion
                                     myKey={key}
-                                    values={value}
+                                    values={value as string[]}
                                     changeSpecialOptions={changeSpecialOptions}
                                     changeArrayOptions={changeArrayOptions}
                                     resetOptions={resetOptions}
@@ -171,7 +189,7 @@ function App(): JSX.Element {
                             ) : (
                                 <FullObjectAccordion
                                     myKey={key}
-                                    values={value}
+                                    values={value as Record<string, unknown>}
                                     changeObjectOptions={changeObjectOptions}
                                     key={key}
                                 ></FullObjectAccordion>
@@ -182,9 +200,16 @@ function App(): JSX.Element {
             <Button
                 onClick={() =>
                     FileSaver.saveAs(
-                        new Blob([YAML.stringify(outputYaml)], {
-                            type: "text/yaml"
-                        }),
+                        new Blob(
+                            [
+                                YAML.stringify(outputYaml, {
+                                    collectionStyle: "flow"
+                                })
+                            ],
+                            {
+                                type: "text/yaml"
+                            }
+                        ),
                         "NewYAML.yaml"
                     )
                 }

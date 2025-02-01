@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-parens */
 import React from "react";
 import { Accordion, Form } from "react-bootstrap";
 export function FullObjectAccordion({
@@ -37,7 +38,9 @@ export function FullObjectAccordion({
                                             e.target.value
                                         )
                                     }
-                                    defaultValue={value2.toString()}
+                                    defaultValue={(
+                                        value2 as string[]
+                                    ).toString()}
                                 ></Form.Control>
                             </Form.Group>
                         </Form>
