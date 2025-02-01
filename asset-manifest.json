@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/KMK_yaml_editor/static/css/main.da81630d.css",
+    "main.js": "/KMK_yaml_editor/static/js/main.4f46ba29.js",
+    "static/js/787.4ef7427d.chunk.js": "/KMK_yaml_editor/static/js/787.4ef7427d.chunk.js",
+    "index.html": "/KMK_yaml_editor/index.html",
+    "main.da81630d.css.map": "/KMK_yaml_editor/static/css/main.da81630d.css.map",
+    "main.4f46ba29.js.map": "/KMK_yaml_editor/static/js/main.4f46ba29.js.map",
+    "787.4ef7427d.chunk.js.map": "/KMK_yaml_editor/static/js/787.4ef7427d.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.da81630d.css",
+    "static/js/main.4f46ba29.js"
+  ]
+}
